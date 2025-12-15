@@ -33,13 +33,17 @@ endif
 # --- Run Streamlit ---
 run:
 ifeq ($(HAS_UV),1)
-	uv run streamlit run $(APP) --client.toolbarMode=$(MODE)
-	ollama run $(OLLAMA_MODEL)
+	
+	uv run streamlit run $(APP) --client.toolbarMode=$(MODE)	
+	
+	
 else
-	$(PYTHON) -m streamlit run $(APP)
-	ollama run $(OLLAMA_MODEL)
+	$(PYTHON) -m streamlit run $(APP) --client.toolbarMode=$(MODE)
+	
 endif
 
+ollama:
+	ollama run $(OLLAMA_MODEL)
 
 # --- Add a package ---
 # Usage: make add pkg=requests
@@ -68,4 +72,4 @@ endif
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
 # --- Start = install + run ---
-start: install run
+start: install run	ollama
