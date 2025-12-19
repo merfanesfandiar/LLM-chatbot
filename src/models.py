@@ -10,6 +10,7 @@ from datetime import datetime
 from langchain_community.utilities import SQLDatabase
 from langgraph.runtime import get_runtime
 from dataclasses import dataclass
+from langchain.agents.middleware import SummarizationMiddleware
 
 load_dotenv()
 
@@ -100,6 +101,13 @@ agent_openai = create_agent(
     tools=[get_current_time,execute_sql],
     system_prompt=PROMPT,
     checkpointer=checkpointer,
+    middleware=[
+        SummarizationMiddleware(
+            model="gpt-4o-mini",
+            trigger=("tokens", 4000),
+            keep=("messages", 20)
+        )
+    ],
     context_schema=RuntimeContext
 )
 
@@ -108,6 +116,13 @@ agent_ollama = create_agent(
     tools=[get_current_time, execute_sql],
     system_prompt=PROMPT,
     checkpointer=checkpointer,
+    middleware=[
+        SummarizationMiddleware(
+            model="gpt-4o-mini",
+            trigger=("tokens", 4000),
+            keep=("messages", 20)
+        )
+    ],
     context_schema=RuntimeContext
 )
 
